@@ -5,7 +5,8 @@
   "scripts": {
     "build": "pwa export",
     "start": "sirv build -s",
-    "watch": "pwa watch"
+    "watch": "pwa watch",
+    "deploy": "pwa export && now && now alias"
   },
   "dependencies": {
     "react": "^16.5.0",
