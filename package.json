@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@pwa/cli": "latest",
+    "@pwa/plugin-sw-workbox": "^0.4.1",
     "@pwa/preset-react": "latest"
   },
   "browserslist": [
