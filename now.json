@@ -1,0 +1,16 @@
+{
+  "name": "pkg",
+  "version": 2,
+  "alias": "pkg.nyc",
+  "builds": [
+    { "src": "pkg.js", "use": "@now/node" },
+    { "src": "./build/**/*", "use": "@now/static" }
+  ],
+  "routes": [
+    { "src": "^/pkg.js", "dest": "/pkg.js" },
+    { "src": "^/(.*)", "dest": "/build/$1" }
+  ],
+  "env": {
+    "BUILDING_LINK_TOKEN": "@building-link-token"
+  }
+}

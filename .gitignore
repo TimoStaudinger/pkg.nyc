@@ -1,0 +1,5 @@
+# Installed dependencies
+/node_modules
+
+# Build artifacts
+/build
