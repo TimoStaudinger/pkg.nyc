@@ -11,6 +11,7 @@
     { "src": "^/(.*)", "dest": "/build/$1" }
   ],
   "env": {
-    "BUILDING_LINK_TOKEN": "@building-link-token"
+    "BUILDING_LINK_TOKEN": "@building-link-token",
+    "BUILDING_LINK_PIN": "@building-link-pin"
   }
 }

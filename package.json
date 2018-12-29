@@ -6,14 +6,16 @@
     "build": "pwa export",
     "start": "sirv build -s",
     "watch": "pwa watch",
-    "deploy": "pwa export && now && now alias"
+    "deploy": "npm i && pwa export && now && now alias",
+    "ship": "now && now alias"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "delay": "^4.1.0",
+    "node-fetch": "^2.3.0",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
-    "sirv-cli": "^0.2.0",
-    "cheerio": "^1.0.0-rc.2",
-    "node-fetch": "^2.3.0"
+    "sirv-cli": "^0.2.0"
   },
   "devDependencies": {
     "@pwa/cli": "latest",

@@ -4,7 +4,7 @@ import LasershipIcon from "@assets/lasership.png";
 import USPSIcon from "@assets/usps.png";
 import UPSIcon from "@assets/ups.png";
 
-import style from "./index.css";
+import style from "./Packages.css";
 
 const getIconPath = carrier => {
   carrier = carrier.toLowerCase();
