@@ -7,7 +7,13 @@ import Message from "./Message";
 import Spinner from "./Spinner";
 
 import style from "./App.css";
-import delay from "delay";
+// import delay from "delay";
+
+const getStoredPIN = () => localStorage.getItem("pin");
+const setStoredPIN = pin =>
+  pin === null
+    ? localStorage.removeItem("pin")
+    : localStorage.setItem("pin", pin);
 
 class App extends React.Component {
   constructor(props) {
@@ -18,15 +24,19 @@ class App extends React.Component {
 
     this.state = {
       packages: null,
-      pin: null,
+      pin: getStoredPIN(),
       error: null,
       pinError: false,
       loading: false
     };
   }
 
-  componentDidMount() {
-    if (this.state.pin) this.fetchPackages(this.state.pin);
+  async componentDidMount() {
+    if (this.state.pin) {
+      if (!(await this.fetchPackages(this.state.pin))) {
+        setStoredPIN(null);
+      }
+    }
   }
 
   async fetchPackages(pin) {
@@ -36,8 +46,9 @@ class App extends React.Component {
       const response = await fetch(`/pkg.js?pin=${pin}`);
 
       // await delay(1000);
-      // const response = { status: 4001 };
+      // const response = { status: 200 };
 
+      // if (pin !== "1238" || response.status === 401) {
       if (response.status === 401) {
         // wrong PIN
 
@@ -56,23 +67,23 @@ class App extends React.Component {
 
         this.setState({
           packages,
-          //   packages: [
-          //     {
-          //       date: " 12/28/18 ",
-          //       carrier: "Lasership",
-          //       text: "1 pkg - LX33558440"
-          //     },
-          //     {
-          //       date: " 12/28/18 ",
-          //       carrier: "USPS",
-          //       text: "1 pkg - LX33558440"
-          //     },
-          //     {
-          //       date: " 12/28/18 ",
-          //       carrier: "UPS",
-          //       text: "1 pkg - LX33558440"
-          //     }
-          //   ],
+          // packages: [
+          //   {
+          //     date: " 12/28/18 ",
+          //     carrier: "Lasership",
+          //     text: "1 pkg - LX33558440"
+          //   },
+          //   {
+          //     date: " 12/28/18 ",
+          //     carrier: "USPS",
+          //     text: "1 pkg - LX33558440"
+          //   },
+          //   {
+          //     date: " 12/28/18 ",
+          //     carrier: "UPS",
+          //     text: "1 pkg - LX33558440"
+          //   }
+          // ],
           loading: false
         });
         return true;
@@ -91,8 +102,10 @@ class App extends React.Component {
 
     if (await this.fetchPackages(pin)) {
       this.setState({ pin });
+      setStoredPIN(pin);
     } else {
       this.setState({ pinError: true });
+      setStoredPIN(null);
     }
   }
 
