@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
     const $ = cheerio.load(deliveriesPage);
 
     const deliveries = [];
-    $("table.rgMasterTable tbody tr").each(function() {
+    $("table.rgMasterTable tbody tr:not(.rgNoRecords)").each(function() {
       const delivery = {};
       $(this)
         .children("td")
