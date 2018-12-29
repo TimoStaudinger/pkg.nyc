@@ -1,34 +1,18 @@
-.container {
-  padding: 0;
-}
-
-.card {
-  padding: 20px;
-  background: white;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 500px;
-  max-width: calc(100% - 80px);
-  min-width: 250px;
-  text-align: center;
-  box-shadow: 2px 2px 4px 0 #151515;
-  margin-bottom: 30px;
-}
-
 .card:last-child {
   margin-bottom: 0;
 }
 
 .carrierIcon {
   height: 200px;
+  width: 200px;
   border-radius: 50%;
+  margin: auto;
 }
 
 .carrier {
   color: #999;
   font-weight: bold;
-  margin-top: 5px;
+  margin-top: 10px;
   margin-bottom: 30px;
 }
 

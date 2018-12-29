@@ -1,6 +1,7 @@
 import React from "react";
 
 import style from "./PinPad.css";
+import Card from "./Card";
 
 class PinPad extends React.Component {
   constructor(props) {
@@ -31,10 +32,9 @@ class PinPad extends React.Component {
 
   render() {
     return (
-      <div
-        className={`${style.container} ${
-          this.props.hasError ? "animated shake" : ""
-        }`}
+      <Card
+        centered
+        className={`${this.props.hasError ? "animated shake" : ""}`}
       >
         <p className={style.title}>PIN</p>
         <input
@@ -46,7 +46,7 @@ class PinPad extends React.Component {
           autoFocus
           ref={this.inputRef}
         />
-      </div>
+      </Card>
     );
   }
 }

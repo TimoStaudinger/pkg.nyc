@@ -5,6 +5,8 @@ import USPSIcon from "@assets/usps.png";
 import UPSIcon from "@assets/ups.png";
 
 import style from "./Packages.css";
+import Card from "./Card";
+import Message from "./Message";
 
 const getIconPath = carrier => {
   carrier = carrier.toLowerCase();
@@ -14,18 +16,18 @@ const getIconPath = carrier => {
   if (carrier.includes("ups")) return UPSIcon;
 };
 
-const Packages = ({ packages }) => (
-  <ul className={style.container}>
-    {packages &&
-      packages.map(pkg => (
-        <li className={style.card}>
-          <img className={style.carrierIcon} src={getIconPath(pkg.carrier)} />
-          <p className={style.carrier}>{pkg.carrier}</p>
-          <p className={style.date}>{pkg.date}</p>
-          <p className={style.text}>{pkg.text}</p>
-        </li>
-      ))}
-  </ul>
-);
+const Packages = ({ packages }) =>
+  packages && packages.length > 0 ? (
+    packages.map(pkg => (
+      <Card>
+        <img className={style.carrierIcon} src={getIconPath(pkg.carrier)} />
+        <p className={style.carrier}>{pkg.carrier}</p>
+        <p className={style.date}>{pkg.date}</p>
+        <p className={style.text}>{pkg.text}</p>
+      </Card>
+    ))
+  ) : (
+    <Message text="No new packages! 😞" />
+  );
 
 export default Packages;
