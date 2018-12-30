@@ -10,6 +10,9 @@
     "ship": "now && now alias"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
+    "@fortawesome/react-fontawesome": "^0.1.3",
     "cheerio": "^1.0.0-rc.2",
     "delay": "^4.1.0",
     "node-fetch": "^2.3.0",

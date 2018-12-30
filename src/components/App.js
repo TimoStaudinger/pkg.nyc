@@ -1,5 +1,6 @@
 import React from "react";
 import { HMR } from "@pwa/preset-react";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Packages from "./Packages";
 import PinPad from "./PinPad";
@@ -7,7 +8,9 @@ import Message from "./Message";
 import Spinner from "./Spinner";
 
 import style from "./App.css";
-// import delay from "delay";
+import Toolbar from "./Toolbar";
+import ToolbarItem from "./ToolbarItem";
+import delay from "delay";
 
 const getStoredPIN = () => localStorage.getItem("pin");
 const setStoredPIN = pin =>
@@ -21,6 +24,7 @@ class App extends React.Component {
 
     this.fetchPackages = this.fetchPackages.bind(this);
     this.handlePINSubmit = this.handlePINSubmit.bind(this);
+    this.signOff = this.signOff.bind(this);
 
     this.state = {
       packages: null,
@@ -97,6 +101,11 @@ class App extends React.Component {
     }
   }
 
+  signOff() {
+    setStoredPIN(null);
+    this.setState({ pin: null });
+  }
+
   async handlePINSubmit(pin) {
     this.setState({ pinError: false });
 
@@ -124,6 +133,16 @@ class App extends React.Component {
         ) : (
           <Packages packages={this.state.packages} />
         )}
+
+        <Toolbar>
+          {this.state.pin !== null && (
+            <ToolbarItem
+              title="Sign off"
+              icon={faSignOutAlt}
+              onClick={this.signOff}
+            />
+          )}
+        </Toolbar>
       </div>
     );
   }

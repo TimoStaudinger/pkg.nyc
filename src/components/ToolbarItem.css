@@ -1,0 +1,10 @@
+.button {
+  color: hsla(0, 0%, 100%, 0.6);
+  transition: all linear 0.1s;
+  cursor: pointer;
+  font-size: 40px;
+}
+
+.button:hover {
+  color: hsla(0, 0%, 100%, 1);
+}
