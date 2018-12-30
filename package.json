@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "build": "pwa build --dest dist",
-    "start": "sirv build -s",
     "watch": "pwa watch",
     "deploy": "now && now alias",
-    "now-build": "npm run build"
+    "now-build": "yarn run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
