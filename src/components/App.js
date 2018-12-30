@@ -47,7 +47,7 @@ class App extends React.Component {
     try {
       this.setState({ loading: true });
 
-      const response = await fetch(`/pkg.js?pin=${pin}`);
+      const response = await fetch(`/pkg?pin=${pin}`);
 
       // await delay(1000);
       // const response = { status: 200 };

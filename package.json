@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "pwa export",
+    "build": "pwa build --dest dist",
     "start": "sirv build -s",
     "watch": "pwa watch",
-    "deploy": "npm i && pwa export && now && now alias",
-    "ship": "now && now alias"
+    "deploy": "now && now alias",
+    "now-build": "npm run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
