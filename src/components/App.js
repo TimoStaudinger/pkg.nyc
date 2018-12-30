@@ -10,7 +10,8 @@ import Spinner from "./Spinner";
 import style from "./App.css";
 import Toolbar from "./Toolbar";
 import ToolbarItem from "./ToolbarItem";
-import delay from "delay";
+
+const ERROR_MESSAGE = "Oops, something went wrong. Please try again later! 🤕";
 
 const getStoredPIN = () => localStorage.getItem("pin");
 const setStoredPIN = pin =>
@@ -49,54 +50,25 @@ class App extends React.Component {
 
       const response = await fetch(`/pkg?pin=${pin}`);
 
-      // await delay(1000);
-      // const response = { status: 200 };
-
-      // if (pin !== "1238" || response.status === 401) {
       if (response.status === 401) {
-        // wrong PIN
+        // Wrong PIN
 
         this.setState({ pin: null, loading: false });
         return false;
-      } else if (response.status >= 400) {
-        // Some other error
+      } else if (response.status !== 200) {
+        // Some other non-OK response code
 
-        this.setState({
-          error: "Oops, something went wrong. Please try again later! 🤕",
-          loading: false
-        });
+        this.setState({ error: ERROR_MESSAGE, loading: false });
         return false;
       } else {
         const packages = await response.json();
 
-        this.setState({
-          packages,
-          // packages: [
-          //   {
-          //     date: " 12/28/18 ",
-          //     carrier: "Lasership",
-          //     text: "1 pkg - LX33558440"
-          //   },
-          //   {
-          //     date: " 12/28/18 ",
-          //     carrier: "USPS",
-          //     text: "1 pkg - LX33558440"
-          //   },
-          //   {
-          //     date: " 12/28/18 ",
-          //     carrier: "UPS",
-          //     text: "1 pkg - LX33558440"
-          //   }
-          // ],
-          loading: false
-        });
+        this.setState({ packages, loading: false });
         return true;
       }
     } catch (err) {
-      this.setState({
-        error: "Oops, something went wrong. Please try again later! 🤕",
-        loading: false
-      });
+      this.setState({ error: ERROR_MESSAGE, loading: false });
+      console.error(err);
       return false;
     }
   }
