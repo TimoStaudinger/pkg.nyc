@@ -123,7 +123,7 @@ class App extends React.Component {
         )}
 
         <Toolbar>
-          {this.state.pin !== null && (
+          {this.state.token !== null && (
             <ToolbarItem
               title="Sign off"
               icon={faSignOutAlt}
