@@ -5,7 +5,7 @@ const UNAUTHORIZED = 401
 const INTERNAL_SERVER_ERROR = 500
 
 const BUILDING_LINK_PACKAGES_URL =
-  'http://www.buildinglink.com/V2/Tenant/Deliveries/Deliveries.aspx'
+  'https://www.buildinglink.com/V2/Tenant/Deliveries/Deliveries.aspx'
 
 const DELIVERIES_TABLE_SELECTOR =
   '#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00'
