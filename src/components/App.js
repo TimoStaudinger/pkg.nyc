@@ -3,7 +3,7 @@ import { HMR } from "@pwa/preset-react";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Packages from "./Packages";
-import PinPad from "./PinPad";
+import PinPad from "./Logon";
 import Message from "./Message";
 import Spinner from "./Spinner";
 
