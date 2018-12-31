@@ -3,17 +3,16 @@
   "version": 2,
   "alias": "pkg.nyc",
   "builds": [
+    { "src": "pkg.js", "use": "@now/node" },
     {
-      "src": "pkg.js",
+      "src": "login.js",
       "use": "@now/node",
       "config": { "maxLambdaSize": "40mb" }
     },
     { "src": "package.json", "use": "@now/static-build" }
   ],
-  "routes": [{ "src": "^/pkg", "dest": "/pkg.js" }],
-  "env": {
-    "BUILDING_LINK_PIN": "@building-link-pin",
-    "BUILDING_LINK_USERNAME": "@building-link-username",
-    "BUILDING_LINK_PASSWORD": "@building-link-password"
-  }
+  "routes": [
+    { "src": "^/pkg", "dest": "/pkg.js" },
+    { "src": "^/login", "dest": "/login.js" }
+  ]
 }
