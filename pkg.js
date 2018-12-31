@@ -1,8 +1,16 @@
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 
+const UNAUTHORIZED = 401;
+const INTERNAL_SERVER_ERROR = 500;
+
 const BUILDING_LINK_PACKAGES_URL =
   "http://www.buildinglink.com/V2/Tenant/Deliveries/Deliveries.aspx";
+
+const DELIVERIES_TABLE_SELECTOR =
+  "#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00";
+const DELIVERIES_SELECTOR =
+  "#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00 tbody tr:not(.rgNoRecords)";
 
 module.exports = async (req, res) => {
   const authHeader = req.headers.authorization;
@@ -10,7 +18,7 @@ module.exports = async (req, res) => {
   const [tokenType, token] = authParts || [];
 
   if (tokenType !== "Bearer" || !token) {
-    res.statusCode = 401;
+    res.statusCode = UNAUTHORIZED;
     res.end("Unauthorized");
     return;
   }
@@ -23,16 +31,14 @@ module.exports = async (req, res) => {
 
     const $ = cheerio.load(deliveriesPage);
 
-    if ($("#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00").length === 0) {
-      res.statusCode = 401;
+    if ($(DELIVERIES_TABLE_SELECTOR).length === 0) {
+      res.statusCode = UNAUTHORIZED;
       res.end("Unauthorized");
       return;
     }
 
     const deliveries = [];
-    $(
-      "#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00 tbody tr:not(.rgNoRecords)"
-    ).each(function() {
+    $(DELIVERIES_SELECTOR).each(function() {
       const delivery = {};
       $(this)
         .children("td")
@@ -54,7 +60,7 @@ module.exports = async (req, res) => {
     res.end(JSON.stringify(deliveries));
   } catch (err) {
     console.error(err);
-    res.statusCode = 500;
+    res.statusCode = INTERNAL_SERVER_ERROR;
     res.end("Internal Server Error");
   }
 };

@@ -1,8 +1,10 @@
 const chrome = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 
-const BUILDING_LINK_LOGIN_URL =
-  "https://www.buildinglink.com/v2/global/login/login.aspx";
+const INTERNAL_SERVER_ERROR = 500;
+const UNAUTHORIZED = 401;
+
+const LOGIN_URL = "https://www.buildinglink.com/v2/global/login/login.aspx";
 
 const getRequestBody = req => {
   return new Promise(resolve => {
@@ -33,7 +35,7 @@ module.exports = async (req, res) => {
     const page = await browser.newPage();
 
     console.log("Opening BuildingLink...");
-    await page.goto(BUILDING_LINK_LOGIN_URL);
+    await page.goto(LOGIN_URL);
     console.log("BuildingLink opened successfully.");
 
     if ((await page.$("input#ctl00_Login1_Password")) !== null) {
@@ -45,10 +47,7 @@ module.exports = async (req, res) => {
       await page.type("#ctl00_Login1_Password", password);
       console.log("Filled password");
 
-      await Promise.all([
-        page.waitForNavigation({ timeout: 0 }),
-        page.click("#LoginButton")
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click("#LoginButton")]);
       console.log("Submitted form");
 
       console.log("Logged in successfully.");
@@ -63,13 +62,13 @@ module.exports = async (req, res) => {
     if (token && token.length > 0) {
       res.end(token);
     } else {
-      res.statusCode = 401;
+      res.statusCode = UNAUTHORIZED;
       res.end("Unauthorized");
     }
     return;
   } catch (err) {
     console.error(err);
-    res.statusCode = 500;
+    res.statusCode = INTERNAL_SERVER_ERROR;
     res.end("Internal Server Error");
   }
 };

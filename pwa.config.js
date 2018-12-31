@@ -4,6 +4,10 @@ exports.webpack = function(config, env) {
       "/pkg": {
         target: "https://pkg.nyc",
         changeOrigin: true
+      },
+      "/login": {
+        target: "https://pkg.nyc",
+        changeOrigin: true
       }
     };
   }

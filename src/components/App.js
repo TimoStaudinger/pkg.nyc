@@ -3,7 +3,7 @@ import { HMR } from "@pwa/preset-react";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Packages from "./Packages";
-import PinPad from "./Logon";
+import LoginForm from "./LoginForm";
 import Message from "./Message";
 import Spinner from "./Spinner";
 
@@ -11,60 +11,64 @@ import style from "./App.css";
 import Toolbar from "./Toolbar";
 import ToolbarItem from "./ToolbarItem";
 
+const OK = 200;
+const UNAUTHORIZED = 401;
+
 const ERROR_MESSAGE = "Oops, something went wrong. Please try again later! 🤕";
 
-const getStoredPIN = () => localStorage.getItem("pin");
-const setStoredPIN = pin =>
-  pin === null
-    ? localStorage.removeItem("pin")
-    : localStorage.setItem("pin", pin);
+const getStoredToken = () => localStorage.getItem("token");
+const setStoredToken = token =>
+  token === null
+    ? localStorage.removeItem("token")
+    : localStorage.setItem("token", token);
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.fetchPackages = this.fetchPackages.bind(this);
-    this.handlePINSubmit = this.handlePINSubmit.bind(this);
-    this.signOff = this.signOff.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
 
     this.state = {
       packages: null,
-      pin: getStoredPIN(),
+      token: getStoredToken(),
       error: null,
-      pinError: false,
+      loginError: false,
       loading: false
     };
   }
 
-  async componentDidMount() {
-    if (this.state.pin) {
-      if (!(await this.fetchPackages(this.state.pin))) {
-        setStoredPIN(null);
-      }
+  componentDidMount() {
+    if (this.state.token) {
+      this.fetchPackages();
     }
   }
 
-  async fetchPackages(pin) {
+  componentDidUpdate(_, prevState) {
+    if (this.state.token && this.state.token !== prevState.token) {
+      this.fetchPackages();
+    }
+  }
+
+  async fetchPackages() {
     try {
       this.setState({ loading: true });
 
-      const response = await fetch(`/pkg?pin=${pin}`);
+      const { token } = this.state;
 
-      if (response.status === 401) {
-        // Wrong PIN
+      const response = await fetch("/pkg", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-        this.setState({ pin: null, loading: false });
-        return false;
-      } else if (response.status !== 200) {
-        // Some other non-OK response code
-
-        this.setState({ error: ERROR_MESSAGE, loading: false });
-        return false;
-      } else {
+      if (response.status === UNAUTHORIZED) {
+        this.logout();
+        this.setState({ loading: false });
+      } else if (response.status === OK) {
         const packages = await response.json();
-
         this.setState({ packages, loading: false });
-        return true;
+      } else {
+        this.setState({ error: ERROR_MESSAGE, loading: false });
       }
     } catch (err) {
       this.setState({ error: ERROR_MESSAGE, loading: false });
@@ -73,20 +77,35 @@ class App extends React.Component {
     }
   }
 
-  signOff() {
-    setStoredPIN(null);
-    this.setState({ pin: null });
+  logout() {
+    this.setState({ token: null });
+    setStoredToken(null);
   }
 
-  async handlePINSubmit(pin) {
-    this.setState({ pinError: false });
+  async login(username, password) {
+    try {
+      this.setState({ loginError: false, token: null, loading: true });
+      setStoredToken(null);
 
-    if (await this.fetchPackages(pin)) {
-      this.setState({ pin });
-      setStoredPIN(pin);
-    } else {
-      this.setState({ pinError: true });
-      setStoredPIN(null);
+      const response = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify({ username, password })
+      });
+
+      if (response.status === UNAUTHORIZED) {
+        this.setState({ loginError: true, loading: false });
+      } else if (response.status === OK) {
+        const token = await response.text();
+
+        this.setState({ token });
+        setStoredToken(token);
+      } else {
+        this.setState({ error: ERROR_MESSAGE, loading: false });
+      }
+    } catch (err) {
+      this.setState({ error: ERROR_MESSAGE, loading: false });
+      console.error(err);
+      return false;
     }
   }
 
@@ -97,11 +116,8 @@ class App extends React.Component {
           <Message text={this.state.error} />
         ) : this.state.loading ? (
           <Spinner />
-        ) : this.state.pin === null ? (
-          <PinPad
-            onSubmit={this.handlePINSubmit}
-            hasError={this.state.pinError}
-          />
+        ) : this.state.token === null ? (
+          <LoginForm onSubmit={this.login} hasError={this.state.loginError} />
         ) : (
           <Packages packages={this.state.packages} />
         )}
@@ -111,7 +127,7 @@ class App extends React.Component {
             <ToolbarItem
               title="Sign off"
               icon={faSignOutAlt}
-              onClick={this.signOff}
+              onClick={this.logout}
             />
           )}
         </Toolbar>

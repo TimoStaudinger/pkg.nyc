@@ -14,10 +14,5 @@
   "routes": [
     { "src": "^/pkg", "dest": "/pkg.js" },
     { "src": "^/login", "dest": "/login.js" }
-  ],
-  "env": {
-    "BUILDING_LINK_PIN": "@building-link-pin",
-    "BUILDING_LINK_USERNAME": "@building-link-username",
-    "BUILDING_LINK_PASSWORD": "@building-link-password"
-  }
+  ]
 }

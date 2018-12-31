@@ -2,12 +2,12 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
-import style from "./Logon.css";
+import style from "./LoginForm.css";
 import Card from "./Card";
 
 const initialState = { username: "", password: "" };
 
-class Logon extends React.Component {
+class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -22,11 +22,6 @@ class Logon extends React.Component {
 
       if (this.inputRef.current) this.inputRef.current.focus();
     }
-  }
-
-  handleChangeUsername(e) {
-    this;
-    const { value } = e.target;
   }
 
   render() {
@@ -65,4 +60,4 @@ class Logon extends React.Component {
   }
 }
 
-export default Logon;
+export default LoginForm;
