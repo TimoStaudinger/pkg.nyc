@@ -45,13 +45,20 @@ module.exports = async (req, res) => {
         .each(function(index) {
           switch (index) {
             case 0:
-              delivery.date = $(this).text()
+              delivery.date = $(this)
+                .text()
+                .trim()
               break
             case 1:
-              delivery.carrier = $(this).text()
+              delivery.carrier = $(this)
+                .text()
+                .replace(' (Location:)', '')
+                .trim()
               break
             case 2:
-              delivery.text = $(this).text()
+              delivery.text = $(this)
+                .text()
+                .trim()
           }
         })
       deliveries.push(delivery)
