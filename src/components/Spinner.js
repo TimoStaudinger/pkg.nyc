@@ -1,7 +1,7 @@
-import React from "react";
-import Card from "./Card";
-import octopus from "../assets/octopus.png";
-import style from "./Spinner.css";
+import React from 'react'
+import Card from './Card'
+import octopus from '../assets/octopus.png'
+import style from './Spinner.css'
 
 const Spinner = () => (
   <Card centered>
@@ -9,6 +9,6 @@ const Spinner = () => (
       <img className={style.icon} src={octopus} />
     </div>
   </Card>
-);
+)
 
-export default Spinner;
+export default Spinner

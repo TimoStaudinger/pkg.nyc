@@ -16,8 +16,8 @@
     "chrome-aws-lambda": "^1.11.2",
     "node-fetch": "^2.3.0",
     "puppeteer-core": "^1.11.0",
-    "react": "^16.5.0",
-    "react-dom": "^16.5.0"
+    "react": "16.7.0-alpha.2",
+    "react-dom": "16.7.0-alpha.2"
   },
   "devDependencies": {
     "@pwa/cli": "latest",

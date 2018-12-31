@@ -1,139 +1,121 @@
-import React from "react";
-import { HMR } from "@pwa/preset-react";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import React, {useState, useEffect} from 'react'
+import {HMR} from '@pwa/preset-react'
+import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
 
-import Packages from "./Packages";
-import LoginForm from "./LoginForm";
-import Message from "./Message";
-import Spinner from "./Spinner";
+import Packages from './Packages'
+import LoginForm from './LoginForm'
+import Message from './Message'
+import Spinner from './Spinner'
 
-import style from "./App.css";
-import Toolbar from "./Toolbar";
-import ToolbarItem from "./ToolbarItem";
+import style from './App.css'
+import Toolbar from './Toolbar'
+import ToolbarItem from './ToolbarItem'
 
-const OK = 200;
-const UNAUTHORIZED = 401;
+const OK = 200
+const UNAUTHORIZED = 401
+const INTERNAL_SERVER_ERROR = 500
 
-const ERROR_MESSAGE = "Oops, something went wrong. Please try again later! 🤕";
+const ERROR_MESSAGE = 'Oops, something went wrong. Please try again later! 🤕'
 
-const getStoredToken = () => localStorage.getItem("token");
+const getStoredToken = () => localStorage.getItem('token')
 const setStoredToken = token =>
   token === null
-    ? localStorage.removeItem("token")
-    : localStorage.setItem("token", token);
+    ? localStorage.removeItem('token')
+    : localStorage.setItem('token', token)
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+const fetchPackages = async token => {
+  try {
+    const response = await fetch('/pkg', {
+      headers: {Authorization: `Bearer ${token}`}
+    })
 
-    this.fetchPackages = this.fetchPackages.bind(this);
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-
-    this.state = {
-      packages: null,
-      token: getStoredToken(),
-      error: null,
-      loginError: false,
-      loading: false
-    };
-  }
-
-  componentDidMount() {
-    if (this.state.token) {
-      this.fetchPackages();
+    if (response.status === OK) {
+      return await response.json()
+    } else {
+      throw response
     }
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (this.state.token && this.state.token !== prevState.token) {
-      this.fetchPackages();
-    }
-  }
-
-  async fetchPackages() {
-    try {
-      this.setState({ loading: true });
-
-      const { token } = this.state;
-
-      const response = await fetch("/pkg", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (response.status === UNAUTHORIZED) {
-        this.logout();
-        this.setState({ loading: false });
-      } else if (response.status === OK) {
-        const packages = await response.json();
-        this.setState({ packages, loading: false });
-      } else {
-        this.setState({ error: ERROR_MESSAGE, loading: false });
-      }
-    } catch (err) {
-      this.setState({ error: ERROR_MESSAGE, loading: false });
-      console.error(err);
-      return false;
-    }
-  }
-
-  logout() {
-    this.setState({ token: null });
-    setStoredToken(null);
-  }
-
-  async login(username, password) {
-    try {
-      this.setState({ loginError: false, token: null, loading: true });
-      setStoredToken(null);
-
-      const response = await fetch("/login", {
-        method: "POST",
-        body: JSON.stringify({ username, password })
-      });
-
-      if (response.status === UNAUTHORIZED) {
-        this.setState({ loginError: true, loading: false });
-      } else if (response.status === OK) {
-        const token = await response.text();
-
-        this.setState({ token });
-        setStoredToken(token);
-      } else {
-        this.setState({ error: ERROR_MESSAGE, loading: false });
-      }
-    } catch (err) {
-      this.setState({ error: ERROR_MESSAGE, loading: false });
-      console.error(err);
-      return false;
-    }
-  }
-
-  render() {
-    return (
-      <div className={style.app}>
-        {this.state.error ? (
-          <Message text={this.state.error} />
-        ) : this.state.loading ? (
-          <Spinner />
-        ) : this.state.token === null ? (
-          <LoginForm onSubmit={this.login} hasError={this.state.loginError} />
-        ) : (
-          <Packages packages={this.state.packages} />
-        )}
-
-        <Toolbar>
-          {this.state.token !== null && (
-            <ToolbarItem
-              title="Sign off"
-              icon={faSignOutAlt}
-              onClick={this.logout}
-            />
-          )}
-        </Toolbar>
-      </div>
-    );
+  } catch (err) {
+    console.error(err)
+    return Promise.reject((err && err.status) || INTERNAL_SERVER_ERROR)
   }
 }
 
-export default HMR(App, module);
+const App = () => {
+  const [packages, setPackages] = useState(null)
+  const [token, setToken] = useState(getStoredToken())
+  const [error, setError] = useState(null)
+  const [isLoginError, setIsLoginError] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const logout = () => {
+    setToken(null)
+    setStoredToken(null)
+  }
+
+  const login = async (username, password) => {
+    try {
+      logout()
+      setIsLoginError(false)
+      setIsLoading(true)
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({username, password})
+      })
+
+      if (response.status === UNAUTHORIZED) setIsLoginError(true)
+      else if (response.status === OK) {
+        const token = await response.text()
+        setToken(token)
+        setStoredToken(token)
+      } else setError(ERROR_MESSAGE)
+    } catch (err) {
+      console.error(err)
+      setError(ERROR_MESSAGE)
+    }
+
+    setIsLoading(false)
+  }
+
+  const refreshPackages = async () => {
+    if (token) {
+      setIsLoading(true)
+      try {
+        setPackages(await fetchPackages(token))
+      } catch (status) {
+        if (status === UNAUTHORIZED) logout()
+        else setError(ERROR_MESSAGE)
+      }
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(
+    () => {
+      refreshPackages()
+    },
+    [token]
+  )
+
+  return (
+    <div className={style.app}>
+      {error ? (
+        <Message text={this.state.error} />
+      ) : isLoading ? (
+        <Spinner />
+      ) : token === null ? (
+        <LoginForm onSubmit={login} hasError={isLoginError} />
+      ) : (
+        <Packages packages={packages} />
+      )}
+
+      <Toolbar>
+        {token !== null && (
+          <ToolbarItem title="Sign off" icon={faSignOutAlt} onClick={logout} />
+        )}
+      </Toolbar>
+    </div>
+  )
+}
+
+export default HMR(App, module)

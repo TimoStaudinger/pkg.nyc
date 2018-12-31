@@ -1,66 +1,66 @@
-const fetch = require("node-fetch");
-const cheerio = require("cheerio");
+const fetch = require('node-fetch')
+const cheerio = require('cheerio')
 
-const UNAUTHORIZED = 401;
-const INTERNAL_SERVER_ERROR = 500;
+const UNAUTHORIZED = 401
+const INTERNAL_SERVER_ERROR = 500
 
 const BUILDING_LINK_PACKAGES_URL =
-  "http://www.buildinglink.com/V2/Tenant/Deliveries/Deliveries.aspx";
+  'http://www.buildinglink.com/V2/Tenant/Deliveries/Deliveries.aspx'
 
 const DELIVERIES_TABLE_SELECTOR =
-  "#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00";
+  '#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00'
 const DELIVERIES_SELECTOR =
-  "#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00 tbody tr:not(.rgNoRecords)";
+  '#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00 tbody tr:not(.rgNoRecords)'
 
 module.exports = async (req, res) => {
-  const authHeader = req.headers.authorization;
-  let authParts = authHeader && authHeader.split(" ");
-  const [tokenType, token] = authParts || [];
+  const authHeader = req.headers.authorization
+  let authParts = authHeader && authHeader.split(' ')
+  const [tokenType, token] = authParts || []
 
-  if (tokenType !== "Bearer" || !token) {
-    res.statusCode = UNAUTHORIZED;
-    res.end("Unauthorized");
-    return;
+  if (tokenType !== 'Bearer' || !token) {
+    res.statusCode = UNAUTHORIZED
+    res.end('Unauthorized')
+    return
   }
 
   try {
     const deliveriesPageHTTPResponse = await fetch(BUILDING_LINK_PACKAGES_URL, {
-      headers: { Cookie: `bl.auth.cookie=${token}` }
-    });
-    const deliveriesPage = await deliveriesPageHTTPResponse.text();
+      headers: {Cookie: `bl.auth.cookie=${token}`}
+    })
+    const deliveriesPage = await deliveriesPageHTTPResponse.text()
 
-    const $ = cheerio.load(deliveriesPage);
+    const $ = cheerio.load(deliveriesPage)
 
     if ($(DELIVERIES_TABLE_SELECTOR).length === 0) {
-      res.statusCode = UNAUTHORIZED;
-      res.end("Unauthorized");
-      return;
+      res.statusCode = UNAUTHORIZED
+      res.end('Unauthorized')
+      return
     }
 
-    const deliveries = [];
+    const deliveries = []
     $(DELIVERIES_SELECTOR).each(function() {
-      const delivery = {};
+      const delivery = {}
       $(this)
-        .children("td")
+        .children('td')
         .each(function(index) {
           switch (index) {
             case 0:
-              delivery.date = $(this).text();
-              break;
+              delivery.date = $(this).text()
+              break
             case 1:
-              delivery.carrier = $(this).text();
-              break;
+              delivery.carrier = $(this).text()
+              break
             case 2:
-              delivery.text = $(this).text();
+              delivery.text = $(this).text()
           }
-        });
-      deliveries.push(delivery);
-    });
+        })
+      deliveries.push(delivery)
+    })
 
-    res.end(JSON.stringify(deliveries));
+    res.end(JSON.stringify(deliveries))
   } catch (err) {
-    console.error(err);
-    res.statusCode = INTERNAL_SERVER_ERROR;
-    res.end("Internal Server Error");
+    console.error(err)
+    res.statusCode = INTERNAL_SERVER_ERROR
+    res.end('Internal Server Error')
   }
-};
+}

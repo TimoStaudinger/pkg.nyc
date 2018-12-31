@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react'
 
-import Card from "./Card";
+import Card from './Card'
 
-import style from "./Message.css";
+import style from './Message.css'
 
-const Message = ({ text }) => (
+const Message = ({text}) => (
   <Card centered>
     <p className={style.text}>{text}</p>
   </Card>
-);
+)
 
-export default Message;
+export default Message

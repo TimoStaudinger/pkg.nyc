@@ -18,7 +18,7 @@
   background-image: url(https://images.unsplash.com/photo-1512850183-6d7990f42385?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80);
   background-position: center;
   background-size: cover;
-  content: " ";
+  content: ' ';
   opacity: 0.7;
   z-index: -1;
 }
