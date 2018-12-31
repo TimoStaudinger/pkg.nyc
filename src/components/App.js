@@ -63,18 +63,22 @@ const App = () => {
         body: JSON.stringify({username, password})
       })
 
-      if (response.status === UNAUTHORIZED) setIsLoginError(true)
-      else if (response.status === OK) {
+      if (response.status === UNAUTHORIZED) {
+        setIsLoginError(true)
+        setIsLoading(false)
+      } else if (response.status === OK) {
         const token = await response.text()
         setToken(token)
         setStoredToken(token)
-      } else setError(ERROR_MESSAGE)
+      } else {
+        setError(ERROR_MESSAGE)
+        setIsLoading(false)
+      }
     } catch (err) {
       console.error(err)
       setError(ERROR_MESSAGE)
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   const refreshPackages = async () => {

@@ -26,28 +26,32 @@ const LoginForm = ({hasError, onSubmit}) => {
   return (
     <Card centered className={`${hasError ? 'animated shake' : ''}`}>
       <p className={style.title}>Packages</p>
-      <input
-        placeholder="Email"
-        type="email"
-        className={style.input}
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        autoFocus
-        ref={inputRef}
-      />
-      <input
-        placeholder="Password"
-        type="password"
-        className={style.input}
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button
-        className={style.submit}
-        onClick={() => onSubmit(username, password)}
-      >
-        <FontAwesomeIcon icon={faArrowRight} />
-      </button>
+      <form onSubmit={() => onSubmit(username, password)}>
+        <input
+          placeholder="Email"
+          type="email"
+          className={style.input}
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          autoFocus
+          ref={inputRef}
+        />
+        <input
+          placeholder="Password"
+          type="password"
+          className={style.input}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button
+          type="submit"
+          className={`${style.submit} ${
+            username.length && password.length ? style.submitActive : ''
+          }`}
+        >
+          <FontAwesomeIcon icon={faArrowRight} />
+        </button>
+      </form>
     </Card>
   )
 }
