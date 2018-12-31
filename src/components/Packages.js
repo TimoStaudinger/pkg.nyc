@@ -3,6 +3,7 @@ import React from 'react'
 import LasershipIcon from '@assets/lasership.png'
 import USPSIcon from '@assets/usps.png'
 import UPSIcon from '@assets/ups.png'
+import LaundryIcon from '@assets/laundry.png'
 
 import style from './Packages.css'
 import Card from './Card'
@@ -14,6 +15,7 @@ const getIconPath = carrier => {
   if (carrier.includes('lasership')) return LasershipIcon
   if (carrier.includes('usps')) return USPSIcon
   if (carrier.includes('ups')) return UPSIcon
+  if (carrier.includes('laundry')) return LaundryIcon
 }
 
 const Packages = ({packages}) =>
