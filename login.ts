@@ -1,14 +1,17 @@
-const chrome = require('chrome-aws-lambda')
-const puppeteer = require('puppeteer-core')
+import {IncomingMessage, ServerResponse} from 'http'
+import {launch} from 'puppeteer'
+import chrome from 'chrome-aws-lambda'
+// const chrome = require('chrome-aws-lambda')
+// const puppeteer = require('puppeteer-core')
 
 const INTERNAL_SERVER_ERROR = 500
 const UNAUTHORIZED = 401
 
 const LOGIN_URL = 'https://www.buildinglink.com/v2/global/login/login.aspx'
 
-const getRequestBody = req => {
+const getRequestBody = (req: IncomingMessage): object => {
   return new Promise(resolve => {
-    let body = []
+    let body: Uint8Array[] = []
     req
       .on('data', chunk => {
         body.push(chunk)
@@ -20,37 +23,38 @@ const getRequestBody = req => {
   })
 }
 
-module.exports = async (req, res) => {
+module.exports = async (req: IncomingMessage, res: ServerResponse) => {
   try {
-    const {username, password} = await getRequestBody(req)
+    const {username, password} = (await getRequestBody(req)) as {
+      username?: string
+      password?: string
+    }
 
-    console.log('Starting new Chromium instance...')
-    const browser = await puppeteer.launch({
+    if (
+      !username ||
+      !password ||
+      username.length === 0 ||
+      password.length === 0
+    ) {
+      res.statusCode = UNAUTHORIZED
+      res.end('Unauthorized')
+      return
+    }
+
+    const browser = await launch({
       args: chrome.args,
       executablePath: await chrome.executablePath,
       headless: chrome.headless
     })
-    console.log('Chromium instance started successfully.')
 
     const page = await browser.newPage()
 
-    console.log('Opening BuildingLink...')
     await page.goto(LOGIN_URL)
-    console.log('BuildingLink opened successfully.')
 
     if ((await page.$('input#ctl00_Login1_Password')) !== null) {
-      console.log('Logging in...')
-
       await page.type('#ctl00_Login1_UserName', username)
-      console.log('Filled user name')
-
       await page.type('#ctl00_Login1_Password', password)
-      console.log('Filled password')
-
       await Promise.all([page.waitForNavigation(), page.click('#LoginButton')])
-      console.log('Submitted form')
-
-      console.log('Logged in successfully.')
     } else console.log('Already logged in.')
 
     const cookies = await page.cookies()
@@ -63,7 +67,6 @@ module.exports = async (req, res) => {
       res.statusCode = UNAUTHORIZED
       res.end('Unauthorized')
     }
-    return
   } catch (err) {
     console.error(err)
     res.statusCode = INTERNAL_SERVER_ERROR

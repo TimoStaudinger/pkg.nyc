@@ -3,10 +3,10 @@
   "version": 2,
   "alias": "pkg.nyc",
   "builds": [
-    {"src": "pkg.js", "use": "@now/node"},
+    {"src": "pkg.js", "use": "@now/node@canary"},
     {
-      "src": "login.js",
-      "use": "@now/node",
+      "src": "login.ts",
+      "use": "@now/node@canary",
       "config": {"maxLambdaSize": "40mb"}
     },
     {"src": "package.json", "use": "@now/static-build"}
