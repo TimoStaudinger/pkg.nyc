@@ -3,16 +3,16 @@
   "version": 2,
   "alias": "pkg.nyc",
   "builds": [
-    {"src": "pkg.ts", "use": "@now/node@canary"},
+    {"src": "api/pkg.ts", "use": "@now/node@canary"},
     {
-      "src": "login.ts",
+      "src": "api/login.ts",
       "use": "@now/node@canary",
       "config": {"maxLambdaSize": "40mb"}
     },
     {"src": "package.json", "use": "@now/static-build"}
   ],
   "routes": [
-    {"src": "^/pkg", "dest": "/pkg.ts"},
-    {"src": "^/login", "dest": "/login.ts"}
+    {"src": "^/api/(.*)", "dest": "/api/$1.ts"},
+    {"src": "^/(.*)", "dest": "/$1"}
   ]
 }

@@ -25,7 +25,7 @@ const setStoredToken = token =>
 
 const fetchPackages = async token => {
   try {
-    const response = await fetch('/pkg', {
+    const response = await fetch('/api/pkg', {
       headers: {Authorization: `Bearer ${token}`}
     })
 
@@ -58,7 +58,7 @@ const App = () => {
       setIsLoginError(false)
       setIsLoading(true)
 
-      const response = await fetch('/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         body: JSON.stringify({username, password})
       })
