@@ -1,5 +1,6 @@
-const fetch = require('node-fetch')
-const cheerio = require('cheerio')
+import {IncomingMessage, ServerResponse} from 'http'
+import fetch from 'node-fetch'
+import * as cheerio from 'cheerio'
 
 const UNAUTHORIZED = 401
 const INTERNAL_SERVER_ERROR = 500
@@ -12,10 +13,19 @@ const DELIVERIES_TABLE_SELECTOR =
 const DELIVERIES_SELECTOR =
   '#ctl00_ContentPlaceHolder1_GridDeliveries_ctl00 tbody tr:not(.rgNoRecords)'
 
-module.exports = async (req, res) => {
+interface Delivery {
+  date?: string
+  carrier?: string
+  text?: string
+}
+
+export default async (req: IncomingMessage, res: ServerResponse) => {
   const authHeader = req.headers.authorization
   let authParts = authHeader && authHeader.split(' ')
-  const [tokenType, token] = authParts || []
+  const [tokenType, token] = (authParts || []) as [
+    string | undefined,
+    string | undefined
+  ]
 
   if (tokenType !== 'Bearer' || !token) {
     res.statusCode = UNAUTHORIZED
@@ -37,9 +47,9 @@ module.exports = async (req, res) => {
       return
     }
 
-    const deliveries = []
+    const deliveries: Delivery[] = []
     $(DELIVERIES_SELECTOR).each(function() {
-      const delivery = {}
+      const delivery: Delivery = {}
       $(this)
         .children('td')
         .each(function(index) {

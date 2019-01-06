@@ -104,7 +104,7 @@ const App = () => {
   return (
     <div className={style.app}>
       {error ? (
-        <Message text={this.state.error} />
+        <Message text={error} />
       ) : isLoading ? (
         <Spinner />
       ) : token === null ? (

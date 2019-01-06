@@ -1,8 +1,6 @@
 import {IncomingMessage, ServerResponse} from 'http'
-import {launch} from 'puppeteer'
+import * as puppeteer from 'puppeteer-core'
 import chrome from 'chrome-aws-lambda'
-// const chrome = require('chrome-aws-lambda')
-// const puppeteer = require('puppeteer-core')
 
 const INTERNAL_SERVER_ERROR = 500
 const UNAUTHORIZED = 401
@@ -23,7 +21,7 @@ const getRequestBody = (req: IncomingMessage): object => {
   })
 }
 
-module.exports = async (req: IncomingMessage, res: ServerResponse) => {
+export default async (req: IncomingMessage, res: ServerResponse) => {
   try {
     const {username, password} = (await getRequestBody(req)) as {
       username?: string
@@ -41,7 +39,7 @@ module.exports = async (req: IncomingMessage, res: ServerResponse) => {
       return
     }
 
-    const browser = await launch({
+    const browser = await puppeteer.launch({
       args: chrome.args,
       executablePath: await chrome.executablePath,
       headless: chrome.headless
