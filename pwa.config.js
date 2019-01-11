@@ -1,11 +1,11 @@
 exports.webpack = function(config, env) {
   if (!env.production) {
     config.devServer.proxy = {
-      '/pkg': {
+      '/api/pkg': {
         target: 'https://pkg.nyc',
         changeOrigin: true
       },
-      '/login': {
+      '/api/login': {
         target: 'https://pkg.nyc',
         changeOrigin: true
       }
