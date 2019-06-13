@@ -1,6 +1,6 @@
 import {IncomingMessage, ServerResponse} from 'http'
 import * as puppeteer from 'puppeteer-core'
-import chrome from 'chrome-aws-lambda'
+import * as chrome from 'chrome-aws-lambda'
 
 const INTERNAL_SERVER_ERROR = 500
 const UNAUTHORIZED = 401
