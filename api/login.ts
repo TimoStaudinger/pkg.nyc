@@ -1,6 +1,5 @@
 import {IncomingMessage, ServerResponse} from 'http'
-import * as puppeteer from 'puppeteer-core'
-import * as chrome from 'chrome-aws-lambda'
+import * as chromium from 'chrome-aws-lambda'
 
 const INTERNAL_SERVER_ERROR = 500
 const UNAUTHORIZED = 401
@@ -8,10 +7,10 @@ const UNAUTHORIZED = 401
 const LOGIN_URL = 'https://www.buildinglink.com/v2/global/login/login.aspx'
 
 const getRequestBody = (req: IncomingMessage): object => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     let body: Uint8Array[] = []
     req
-      .on('data', chunk => {
+      .on('data', (chunk) => {
         body.push(chunk)
       })
       .on('end', () => {
@@ -39,10 +38,10 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
       return
     }
 
-    const browser = await puppeteer.launch({
-      args: chrome.args,
-      executablePath: await chrome.executablePath,
-      headless: chrome.headless
+    const browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     })
 
     const page = await browser.newPage()
@@ -56,7 +55,9 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     } else console.log('Already logged in.')
 
     const cookies = await page.cookies()
-    const tokenCookie = cookies.find(cookie => cookie.name === 'bl.auth.cookie')
+    const tokenCookie = cookies.find(
+      (cookie) => cookie.name === 'bl.auth.cookie'
+    )
     const token = tokenCookie && tokenCookie.value
 
     if (token && token.length > 0) {
