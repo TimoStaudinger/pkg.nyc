@@ -35,7 +35,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
 
   try {
     const deliveriesPageHTTPResponse = await fetch(BUILDING_LINK_PACKAGES_URL, {
-      headers: {Cookie: `bl.auth.cookie=${token}`}
+      headers: {Cookie: `bl.auth.cookie=${token}`},
     })
     const deliveriesPage = await deliveriesPageHTTPResponse.text()
 
@@ -48,16 +48,14 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     }
 
     const deliveries: Delivery[] = []
-    $(DELIVERIES_SELECTOR).each(function() {
+    $(DELIVERIES_SELECTOR).each(function () {
       const delivery: Delivery = {}
       $(this)
         .children('td')
-        .each(function(index) {
+        .each(function (index) {
           switch (index) {
             case 0:
-              delivery.date = $(this)
-                .text()
-                .trim()
+              delivery.date = $(this).text().trim()
               break
             case 1:
               delivery.carrier = $(this)
@@ -66,9 +64,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
                 .trim()
               break
             case 2:
-              delivery.text = $(this)
-                .text()
-                .trim()
+              delivery.text = $(this).text().trim()
           }
         })
       deliveries.push(delivery)

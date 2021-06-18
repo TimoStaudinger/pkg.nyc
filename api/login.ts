@@ -1,16 +1,31 @@
 import {IncomingMessage, ServerResponse} from 'http'
-import * as chromium from 'chrome-aws-lambda'
+import chromium from 'chrome-aws-lambda'
 
 const INTERNAL_SERVER_ERROR = 500
 const UNAUTHORIZED = 401
 
 const LOGIN_URL = 'https://www.buildinglink.com/v2/global/login/login.aspx'
 
+async function getBrowserInstance() {
+  const executablePath = await chromium.executablePath
+
+  return chromium.puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: {
+      width: 1280,
+      height: 720,
+    },
+    executablePath,
+    headless: chromium.headless,
+    ignoreHTTPSErrors: true,
+  })
+}
+
 const getRequestBody = (req: IncomingMessage): object => {
   return new Promise((resolve) => {
     let body: Uint8Array[] = []
     req
-      .on('data', (chunk) => {
+      .on('data', (chunk: Uint8Array) => {
         body.push(chunk)
       })
       .on('end', () => {
@@ -38,14 +53,9 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
       return
     }
 
-    const browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-    })
+    const browser = await getBrowserInstance()
 
     const page = await browser.newPage()
-
     await page.goto(LOGIN_URL)
 
     if ((await page.$('input#ctl00_Login1_Password')) !== null) {
