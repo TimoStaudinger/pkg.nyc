@@ -65,13 +65,13 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     } else console.log('Could not find login form.')
 
     const cookies = await page.cookies()
-    const tokenCookie = cookies.find(
-      (cookie) => cookie.name === 'bl.auth.cookie'
+    const tokenCookies = cookies.filter(
+      (cookie) => cookie.name.startsWith('bl.auth')
     )
-    const token = tokenCookie && tokenCookie.value
-
-    if (token && token.length > 0) {
-      res.end(token)
+    
+    if (tokenCookies && tokenCookies.length > 0) {
+      const tokens = tokenCookies.map(cookie => ({name: cookie.name, value: cookie.value}))
+      res.end(tokens)
     } else {
       res.statusCode = UNAUTHORIZED
       res.end('Unauthorized')

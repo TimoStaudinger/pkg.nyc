@@ -34,8 +34,12 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
   }
 
   try {
+    let authCookies = JSON.parse(token) as {name: string; value: string}[]
+    let authCookieString = authCookies
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join('; ')
     const deliveriesPageHTTPResponse = await fetch(BUILDING_LINK_PACKAGES_URL, {
-      headers: {Cookie: `bl.auth.cookie=${token}`},
+      headers: {Cookie: authCookieString},
     })
     const deliveriesPage = await deliveriesPageHTTPResponse.text()
 
