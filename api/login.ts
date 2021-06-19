@@ -91,7 +91,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
         name: cookie.name,
         value: cookie.value,
       }))
-      res.end(tokens)
+      res.end(JSON.stringify(tokens))
     } else {
       console.error('No token cookies found')
       res.statusCode = UNAUTHORIZED
