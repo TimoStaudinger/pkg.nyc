@@ -74,12 +74,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
       return
     }
 
-    if (await page.$('div.user-links') === null) {
-      console.error('Not redirected to homepage. Incorrect credentials?')
-      res.statusCode = UNAUTHORIZED
-      res.end('Unauthorized')
-      return
-    }
+    await page.waitForSelector('div.user-links')
 
     const cookies = await page.cookies()
     console.log(
