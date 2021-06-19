@@ -58,11 +58,11 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     const page = await browser.newPage()
     await page.goto(LOGIN_URL)
 
-    if ((await page.$('input#ctl00_Login1_Password')) !== null) {
-      await page.type('#ctl00_Login1_UserName', username)
-      await page.type('#ctl00_Login1_Password', password)
+    if ((await page.$('input#Password')) !== null) {
+      await page.type('#UserName', username)
+      await page.type('#Password', password)
       await Promise.all([page.waitForNavigation(), page.click('#LoginButton')])
-    } else console.log('Already logged in.')
+    } else console.log('Could not find login form.')
 
     const cookies = await page.cookies()
     const tokenCookie = cookies.find(
