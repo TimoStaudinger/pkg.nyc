@@ -48,6 +48,7 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
       username.length === 0 ||
       password.length === 0
     ) {
+      console.error('No username/password provided')
       res.statusCode = UNAUTHORIZED
       res.end('Unauthorized')
       return
@@ -58,21 +59,39 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     const page = await browser.newPage()
     await page.goto(LOGIN_URL)
 
-    if ((await page.$('input#Password')) !== null) {
+    if (
+      (await page.$('#UserName')) !== null &&
+      (await page.$('#Password')) !== null &&
+      (await page.$('#LoginButton')) !== null
+    ) {
       await page.type('#UserName', username)
       await page.type('#Password', password)
       await Promise.all([page.waitForNavigation(), page.click('#LoginButton')])
-    } else console.log('Could not find login form.')
+    } else {
+      console.error('Could not find login form.')
+      res.statusCode = INTERNAL_SERVER_ERROR
+      res.end('Internal Server Error')
+      return
+    }
 
     const cookies = await page.cookies()
-    const tokenCookies = cookies.filter(
-      (cookie) => cookie.name.startsWith('bl.auth')
+    console.log(
+      'Cookies after login',
+      cookies.map((cookie) => [cookie.name, cookie.value])
     )
-    
+    const tokenCookies = cookies.filter((cookie) =>
+      cookie.name.startsWith('bl.auth')
+    )
+
     if (tokenCookies && tokenCookies.length > 0) {
-      const tokens = tokenCookies.map(cookie => ({name: cookie.name, value: cookie.value}))
+      console.log(`${tokenCookies.length} token cookies found`)
+      const tokens = tokenCookies.map((cookie) => ({
+        name: cookie.name,
+        value: cookie.value,
+      }))
       res.end(tokens)
     } else {
+      console.error('No token cookies found')
       res.statusCode = UNAUTHORIZED
       res.end('Unauthorized')
     }
