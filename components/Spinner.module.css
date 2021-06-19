@@ -1,0 +1,36 @@
+@keyframes swim {
+  0%,
+  100% {
+    left: -80px;
+    transform: rotate(10deg);
+  }
+
+  30% {
+    transform: rotate(10deg);
+  }
+
+  50% {
+    left: 80px;
+    transform: rotate(-10deg);
+  }
+
+  80% {
+    transform: rotate(-10deg);
+  }
+}
+
+.spinner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+.icon {
+  top: 0;
+  left: 0;
+  width: 100px;
+  position: absolute;
+  animation: swim 1.5s 0s infinite ease-in-out;
+}

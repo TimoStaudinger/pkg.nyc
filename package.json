@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "pwa build",
-    "watch": "pwa watch"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
@@ -12,19 +13,20 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "cheerio": "^1.0.0-rc.3",
     "chrome-aws-lambda": "^10.0.0",
+    "next": "^11.0.0",
+    "next-pwa": "^5.2.21",
     "node-fetch": "^2.6.1",
     "puppeteer-core": "^10.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
-    "@pwa/cli": "latest",
-    "@pwa/plugin-sw-workbox": "latest",
-    "@pwa/preset-react": "latest",
     "@types/cheerio": "^0.22.11",
-    "@types/node": "^15.12.3",
+    "@types/node": "^15.12.4",
     "@types/node-fetch": "^2.3.6",
-    "@types/puppeteer-core": "^5.4.0"
+    "@types/puppeteer-core": "^5.4.0",
+    "@types/react": "^17.0.11",
+    "typescript": "^4.3.4"
   },
   "browserslist": [
     ">0.25%",
@@ -32,5 +34,10 @@
     "not ie_mob 11",
     "not ie 11",
     "not dead"
-  ]
+  ],
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": false
+  }
 }

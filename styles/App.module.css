@@ -1,0 +1,24 @@
+.app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+
+  padding: 30px;
+}
+
+.app::before {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: url(https://images.unsplash.com/photo-1512850183-6d7990f42385?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80);
+  background-position: center;
+  background-size: cover;
+  content: ' ';
+  opacity: 0.7;
+  z-index: -1;
+}
