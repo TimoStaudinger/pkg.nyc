@@ -3,11 +3,11 @@ import React from 'react'
 import Card from './Card'
 import Message from './Message'
 
-import LasershipIcon from './logos/lasership.png'
-import USPSIcon from './logos/usps.png'
-import UPSIcon from './logos/ups.png'
-import LaundryIcon from './logos/laundry.png'
-import PharmacyIcon from './logos/pharmacy.png'
+// import LasershipIcon from './logos/lasership.png'
+// import USPSIcon from './logos/usps.png'
+// import UPSIcon from './logos/ups.png'
+// import LaundryIcon from './logos/laundry.png'
+// import PharmacyIcon from './logos/pharmacy.png'
 
 import styles from './Packages.module.css'
 

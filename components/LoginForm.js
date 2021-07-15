@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faArrowRight} from '@fortawesome/free-solid-svg-icons'
+import {ArrowRight} from 'react-feather'
 
 import Card from './Card'
 import styles from './LoginForm.module.css'
@@ -22,7 +21,7 @@ const LoginForm = ({hasError, onSubmit}) => {
 
   return (
     <Card centered className={`${hasError ? 'animated shake' : ''}`}>
-      {/* <p className={styles.title}>Packages</p> */}
+      <p className={styles.title}>Packages</p>
       <form onSubmit={() => onSubmit(username, password)}>
         <input
           placeholder="Email"
@@ -46,7 +45,7 @@ const LoginForm = ({hasError, onSubmit}) => {
             username.length && password.length ? styles.submitActive : ''
           }`}
         >
-          <FontAwesomeIcon icon={faArrowRight} />
+          <ArrowRight />
         </button>
       </form>
     </Card>

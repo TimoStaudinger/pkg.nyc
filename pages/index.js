@@ -17,11 +17,12 @@ const INTERNAL_SERVER_ERROR = 500
 const ERROR_MESSAGE = 'Oops, something went wrong. Please try again later! 🤕'
 
 const getStoredToken = () =>
-  (typeof localStorage !== 'undefined' && localStorage.getItem('token')) ?? null
+  typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
 const setStoredToken = (token) =>
-  token === null
+  typeof localStorage !== 'undefined' &&
+  (token === null
     ? localStorage.removeItem('token')
-    : localStorage.setItem('token', token)
+    : localStorage.setItem('token', token))
 
 const fetchPackages = async (token) => {
   try {

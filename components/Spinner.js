@@ -2,13 +2,12 @@ import React from 'react'
 
 import Card from './Card'
 
-import octopus from './octopus.png'
 import styles from './Spinner.module.css'
 
 const Spinner = () => (
   <Card centered>
     <div className={styles.spinner}>
-      <img className={styles.icon} src={octopus} />
+      <img className={styles.icon} src="octopus.png" />
     </div>
   </Card>
 )
