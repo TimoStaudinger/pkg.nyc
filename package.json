@@ -12,7 +12,7 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "cheerio": "^1.0.0-rc.3",
     "chrome-aws-lambda": "^10.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "puppeteer-core": "^10.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
